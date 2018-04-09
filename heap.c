@@ -11,11 +11,23 @@
 
 heap* heap_nova(int capacidade)
 {
-  return NULL;
+  heap *new;
+  /*aloca memoria para a estrutura heap*/
+  new = (heap*)malloc(sizeof(heap));
+  if(new == NULL) {
+    return NULL;
+  }
+
+  new->capacidade = capacidade;
+  new->tamanho = 0;
+  new->elementos = NULL;
+  
+  return new;
 }
 
 int heap_insere(heap * h, const char * texto, int prioridade)
-{
+{ 
+  
   return 0;
 }
 
