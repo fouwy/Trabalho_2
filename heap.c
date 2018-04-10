@@ -1,5 +1,5 @@
 /*****************************************************************/
-/*         Trabalho pratico 2 | PROG2 | MIEEC | 2017/18          */
+/*         Trabalho pratico 2 | Trabalho2 | MIEEC | 2017/18          */
 /*****************************************************************/
 /*                    FUNCOES A IMPLEMENTAR                      */
 /*****************************************************************/
@@ -9,72 +9,95 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define N 50 //capacidade da string valor
-
-heap* heap_nova(int capacidade)
+heap *heap_nova(int capacidade)
 {
-  heap *new;
+  heap *h = (heap *)malloc(sizeof(heap));
+  int i=1;
+  h->elementos = (elemento **)malloc(sizeof(elemento)); // vetor de apontadores para elementos
+  h->capacidade = capacidade;
+  h->tamanho = 0;
+  h->elementos[0]=NULL;
 
-  /*aloca memoria para a estrutura heap*/
-  new = (heap*)malloc(sizeof(heap));
-  if(new == NULL) {
-    return NULL;
-  }
-
-  new->capacidade = capacidade;
-  new->tamanho = 0;
-
-  /*aloca memoria para o array de pointers*/
-  new->elementos = (elemento**)malloc(capacidade * sizeof(elemento*));
-
-  /*aloca memoria para o array de structs*/
-  for( int i = 0; i < capacidade; i++ ) {
-    new->elementos[i] = malloc(sizeof(elemento));
-    new->elementos[i]->valor = (char*)malloc(sizeof(char) * N);
-  }
-
-  return new;
+  return h;
 }
 
-int heap_insere(heap * h, const char * texto, int prioridade)
-{ 
-  int i;
+int heap_insere(heap *h, const char *texto, int prioridade)
+{   
+    int i;
+    elemento* aux= (elemento*)malloc(sizeof(elemento));
+    aux->prioridade=prioridade;
+    aux->valor=strdup(texto);
 
-  /* Verifica se a heap está cheia; Se estiver retorna 0; */
-  if( h->tamanho == h->capacidade ) {
-    return 0;
-  }
-  
-  h->tamanho++;
+    if(h->elementos==NULL) return 0;
 
-  // if(h->tamanho == 1) {
-  //   h->elementos[1]->prioridade = prioridade;
-  //   strcpy( h->elementos[1]->valor, texto );
+    h->tamanho++;
 
-  //   return 1;
-  // }
+    h->elementos= realloc(h->elementos, (h->tamanho + 1) * sizeof(elemento));
 
-  for( i = h->tamanho; i > 1 && h->elementos[i/2]->prioridade > prioridade; i /= 2 ) {
-    h->elementos[i] = h->elementos[i/2];
-  }
+    i= h->tamanho;
 
-  h->elementos[i]->prioridade = prioridade;
-  strcpy( h->elementos[i]->valor, texto );
+    for (i = h->tamanho; i > 1 && h->elementos[i/2]->prioridade > prioridade; i /= 2){
+      h->elementos[i]= h->elementos[i/2];
+    }
+      
+      h->elementos[i]=aux;
 
-  return 1;
+ return 1;
 }
 
 void heap_apaga(heap *h)
 {
+  for (int i = 1; i < h->tamanho; i++){
+    free(h->elementos[i]->valor); //liberta todas as strings
+    free(h->elementos[i]); //liberta o vetor;
+  }
+
+  free(h); 
   return;
 }
 
-char* heap_remove(heap * h)
-{
+char *heap_remove(heap *h)
+{ /*
+  if(h==NULL) return NULL;
+
+  char * aux = strdup(h->elementos[1]->valor);
+  free(h->elementos[1]->valor);
+  int i=1;
+
+  while (i<h->tamanho && h->elementos[i*2]!=NULL){
+
+
+      if(h->elementos[i*2]>h->elementos[(i*2)+1]){
+
+        h->elementos[i]=h->elementos[(i*2)+1];
+        i=(i*2)+1;
+
+      }
+        else {
+        h->elementos[i]=h->elementos[(i*2)];
+        i=i*2;
+        }
+
+
+
+  }
+
+
+  while(i<h->tamanho){
+
+    h->elementos[i]=h->elementos[i+1];
+    i++;
+
+  }
+  
+  h->tamanho--;
+
+
+  return aux;*/
   return NULL;
 }
 
-heap* heap_constroi(elemento* v, int n_elementos)
+heap *heap_constroi(elemento *v, int n_elementos)
 {
   return NULL;
 }
@@ -87,23 +110,23 @@ int heap_altera_prioridade(heap *h, int indice, int nova_prioridade)
 void mostraHeap(heap *h, int indice)
 {
   int i, nivel = 0;
-  
-  if (indice < h->tamanho)
+
+  if (indice <= h->tamanho)
   {
     i = indice;
-    while(i > 1)
+    while (i > 1)
     {
-      i = i/2;
+      i = i / 2;
       nivel++;
     }
-    
-    mostraHeap(h, indice*2);
-    
-    for(i = 0; i < 3 * nivel; i++)
+
+    mostraHeap(h, indice * 2);
+
+    for (i = 0; i < 3 * nivel; i++)
       printf("     ");
-    
-    printf("%s (%d)\n",h->elementos[indice]->valor, h->elementos[indice]->prioridade);
-    
-    mostraHeap(h, indice*2+1);
+
+    printf("%s (%d)\n", h->elementos[indice]->valor, h->elementos[indice]->prioridade);
+
+    mostraHeap(h, indice * 2 + 1);
   }
 }
