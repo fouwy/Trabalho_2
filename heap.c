@@ -22,7 +22,7 @@ heap *heap_nova(int capacidade)
 }
 
 int heap_insere(heap *h, const char *texto, int prioridade)
-{   
+{
     int i;
     elemento* aux= (elemento*)malloc(sizeof(elemento));
     aux->prioridade=prioridade;
@@ -39,7 +39,7 @@ int heap_insere(heap *h, const char *texto, int prioridade)
     for (i = h->tamanho; i > 1 && h->elementos[i/2]->prioridade > prioridade; i /= 2){
       h->elementos[i]= h->elementos[i/2];
     }
-      
+
       h->elementos[i]=aux;
 
  return 1;
@@ -52,49 +52,33 @@ void heap_apaga(heap *h)
     free(h->elementos[i]); //liberta o vetor;
   }
 
-  free(h); 
+  free(h);
   return;
 }
 
 char *heap_remove(heap *h)
-{ /*
+{
   if(h==NULL) return NULL;
 
   char * aux = strdup(h->elementos[1]->valor);
-  free(h->elementos[1]->valor);
-  int i=1;
 
-  while (i<h->tamanho && h->elementos[i*2]!=NULL){
+  int i = 1;
 
-
-      if(h->elementos[i*2]>h->elementos[(i*2)+1]){
-
-        h->elementos[i]=h->elementos[(i*2)+1];
-        i=(i*2)+1;
-
+  while ((i*2)+1 <= h->tamanho){
+      if(h->elementos[i*2]->prioridade > h->elementos[(i*2)+1]->prioridade){
+        h->elementos[i] = h->elementos[(i*2)+1];
+        i = (i*2)+1;
       }
-        else {
-        h->elementos[i]=h->elementos[(i*2)];
+
+      else if(h->elementos[i*2]->prioridade < h->elementos[(i*2)+1]->prioridade) {
+        h->elementos[i] = h->elementos[(i*2)];
         i=i*2;
         }
-
-
-
   }
 
-
-  while(i<h->tamanho){
-
-    h->elementos[i]=h->elementos[i+1];
-    i++;
-
-  }
-  
-  h->tamanho--;
-
-
-  return aux;*/
-  return NULL;
+  h->elementos[i] = h->elementos[h->tamanho];
+  h->tamanho --;
+  return aux;
 }
 
 heap *heap_constroi(elemento *v, int n_elementos)
