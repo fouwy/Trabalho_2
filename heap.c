@@ -9,9 +9,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define N 50 //capacidade da string valor
+
 heap* heap_nova(int capacidade)
 {
   heap *new;
+
   /*aloca memoria para a estrutura heap*/
   new = (heap*)malloc(sizeof(heap));
   if(new == NULL) {
@@ -20,15 +23,45 @@ heap* heap_nova(int capacidade)
 
   new->capacidade = capacidade;
   new->tamanho = 0;
-  new->elementos = NULL;
-  
+
+  /*aloca memoria para o array de pointers*/
+  new->elementos = (elemento**)malloc(capacidade * sizeof(elemento*));
+
+  /*aloca memoria para o array de structs*/
+  for( int i = 0; i < capacidade; i++ ) {
+    new->elementos[i] = malloc(sizeof(elemento));
+    new->elementos[i]->valor = (char*)malloc(sizeof(char) * N);
+  }
+
   return new;
 }
 
 int heap_insere(heap * h, const char * texto, int prioridade)
 { 
+  int i;
+
+  /* Verifica se a heap está cheia; Se estiver retorna 0; */
+  if( h->tamanho == h->capacidade ) {
+    return 0;
+  }
   
-  return 0;
+  h->tamanho++;
+
+  // if(h->tamanho == 1) {
+  //   h->elementos[1]->prioridade = prioridade;
+  //   strcpy( h->elementos[1]->valor, texto );
+
+  //   return 1;
+  // }
+
+  for( i = h->tamanho; i > 1 && h->elementos[i/2]->prioridade > prioridade; i /= 2 ) {
+    h->elementos[i] = h->elementos[i/2];
+  }
+
+  h->elementos[i]->prioridade = prioridade;
+  strcpy( h->elementos[i]->valor, texto );
+
+  return 1;
 }
 
 void heap_apaga(heap *h)
