@@ -58,13 +58,20 @@ void heap_apaga(heap *h)
 
 char *heap_remove(heap *h)
 {
-  if(h==NULL) return NULL;
+  if(h==NULL || h->tamanho == 0) return NULL;
 
   char * aux = strdup(h->elementos[1]->valor);
 
+  // liberta a memoria do elemento que se vai retirar
+  free(h->elementos[1]->valor);
+  free(h->elementos[1]);
+
   int i = 1;
 
-  while ((i*2)+1 <= h->tamanho){
+  if(h->tamanho > 1) {
+
+    // compara os filhos e move o menor para cima
+    while ((i*2)+1 <= h->tamanho){
       if(h->elementos[i*2]->prioridade > h->elementos[(i*2)+1]->prioridade){
         h->elementos[i] = h->elementos[(i*2)+1];
         i = (i*2)+1;
@@ -74,16 +81,30 @@ char *heap_remove(heap *h)
         h->elementos[i] = h->elementos[(i*2)];
         i=i*2;
         }
+    }
+
+    h->elementos[i] = h->elementos[h->tamanho];
   }
 
-  h->elementos[i] = h->elementos[h->tamanho];
   h->tamanho --;
   return aux;
 }
 
 heap *heap_constroi(elemento *v, int n_elementos)
-{
-  return NULL;
+{ 
+  heap *aux;
+
+  int i;
+
+  aux = heap_nova(n_elementos);
+  aux->tamanho = n_elementos;
+
+  for (i=1; i <= n_elementos; i++) {
+    aux->elementos[i] = &v[i];
+  }
+
+  return aux;
+  // return NULL;
 }
 
 int heap_altera_prioridade(heap *h, int indice, int nova_prioridade)
