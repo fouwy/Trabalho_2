@@ -109,8 +109,96 @@ heap *heap_constroi(elemento *v, int n_elementos)
 }
 
 int heap_altera_prioridade(heap *h, int indice, int nova_prioridade)
-{
-  return -1;
+{  
+  int esquerda, direita, pai;
+  elemento *aux;
+
+  if(indice > h->capacidade) {
+    return -1;
+  }
+
+  if(h == NULL) {
+    return -1;
+  }
+
+  // altera a prioridade do elemento
+  h->elementos[indice]->prioridade = nova_prioridade;
+
+
+  // Verifica Se o Elemento Esta Na Posicao Correta
+  do {
+
+    // Se o elemento for uma folha
+    if (indice * 2 > h->capacidade) {
+      pai = h->elementos[indice / 2]->prioridade;
+
+      // se o pai tiver menos prioridade, troca com o pai
+      if(pai > h->elementos[indice]->prioridade) {
+        aux = h->elementos[indice];
+        h->elementos[indice] = h->elementos[indice / 2];
+        h->elementos[indice / 2] = aux;
+
+        indice /= 2;
+        continue;
+      }
+
+      else {
+        return 1;
+      }
+    }
+
+    esquerda = h->elementos[indice * 2]->prioridade;
+    direita = h->elementos[(indice * 2) + 1]->prioridade;
+    pai = h->elementos[indice / 2]->prioridade;
+
+    // Se o Elemento For a Raiz
+    if (indice == 1) {
+      if(nova_prioridade < esquerda && nova_prioridade < direita) {
+        return 1;
+      }
+    }
+
+    // se nao for uma follha nem raiz
+  
+    // se algum dos filhos tiver mais prioridade, o elemento desce
+    if (esquerda < h->elementos[indice]->prioridade || direita < h->elementos[indice]->prioridade) {
+      
+      //se o da esquerda for menor troca-o com o elemento 
+      if(esquerda < direita) {
+        aux  = h->elementos[indice];
+        h->elementos[indice] = h->elementos[indice * 2];
+        h->elementos[indice * 2] = aux;
+
+        indice *= 2;
+      }
+
+      //se o da direita for menor troca-o com o elemento 
+      if(esquerda >= direita) {
+        aux  = h->elementos[indice];
+        h->elementos[indice] = h->elementos[(indice * 2) + 1];
+        h->elementos[(indice * 2) + 1] = aux;
+
+        indice = (indice * 2) + 1;
+      }
+    }
+
+
+    // se o pai tiver menos prioridade, troca com o pai
+    if(pai > h->elementos[indice]->prioridade) {
+      aux  = h->elementos[indice];
+      h->elementos[indice] = h->elementos[indice / 2];
+      h->elementos[indice / 2] = aux;
+
+      if (indice / 2 == 1) {
+        return 1;
+      }
+
+      indice /= 2;
+    }
+
+  } while(nova_prioridade > esquerda || nova_prioridade > direita || nova_prioridade < pai);
+
+  return 1;
 }
 
 void mostraHeap(heap *h, int indice)
