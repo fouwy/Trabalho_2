@@ -93,19 +93,19 @@ char *heap_remove(heap *h)
 
 heap *heap_constroi(elemento *v, int n_elementos)
 { 
-  // heap *aux;
+  heap *HEAP;
 
-  // int i;
+  int i;
 
-  // aux = heap_nova(n_elementos);
-  // aux->tamanho = n_elementos;
+  HEAP = heap_nova(n_elementos);
 
-  // for (i=1; i <= n_elementos; i++) {
-  //   aux->elementos[i] = &v[i];
-  // }
+  for (i=0; i < n_elementos; i++) {
+    if( heap_insere(HEAP, v[i].valor, v[i].prioridade) == 0)
+      return NULL;
+  }
 
-  // return aux;
-  return NULL;
+  return HEAP;
+  // return NULL;
 }
 
 int heap_altera_prioridade(heap *h, int indice, int nova_prioridade)
