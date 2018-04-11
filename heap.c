@@ -23,26 +23,27 @@ heap *heap_nova(int capacidade)
 
 int heap_insere(heap *h, const char *texto, int prioridade)
 {
-    int i;
-    elemento* aux= (elemento*)malloc(sizeof(elemento));
-    aux->prioridade=prioridade;
-    aux->valor=strdup(texto);
+  int i;
+  elemento* aux= (elemento*)malloc(sizeof(elemento));
+  aux->prioridade=prioridade;
+  aux->valor=strdup(texto);
 
-    if(h->elementos==NULL) return 0;
+  if(h->elementos==NULL) return 0;
 
-    h->tamanho++;
+  if(h->tamanho == h->capacidade) return 0;
+  h->tamanho++;
 
-    h->elementos= realloc(h->elementos, (h->tamanho + 1) * sizeof(elemento));
+  h->elementos= realloc(h->elementos, (h->tamanho + 1) * sizeof(elemento));
 
-    i= h->tamanho;
+  i= h->tamanho;
 
-    for (i = h->tamanho; i > 1 && h->elementos[i/2]->prioridade > prioridade; i /= 2){
-      h->elementos[i]= h->elementos[i/2];
-    }
+  for (i = h->tamanho; i > 1 && h->elementos[i/2]->prioridade > prioridade; i /= 2){
+    h->elementos[i]= h->elementos[i/2];
+  }
 
-      h->elementos[i]=aux;
+  h->elementos[i]=aux;
 
- return 1;
+  return 1;
 }
 
 void heap_apaga(heap *h)
@@ -92,19 +93,19 @@ char *heap_remove(heap *h)
 
 heap *heap_constroi(elemento *v, int n_elementos)
 { 
-  heap *aux;
+  // heap *aux;
 
-  int i;
+  // int i;
 
-  aux = heap_nova(n_elementos);
-  aux->tamanho = n_elementos;
+  // aux = heap_nova(n_elementos);
+  // aux->tamanho = n_elementos;
 
-  for (i=1; i <= n_elementos; i++) {
-    aux->elementos[i] = &v[i];
-  }
+  // for (i=1; i <= n_elementos; i++) {
+  //   aux->elementos[i] = &v[i];
+  // }
 
-  return aux;
-  // return NULL;
+  // return aux;
+  return NULL;
 }
 
 int heap_altera_prioridade(heap *h, int indice, int nova_prioridade)
